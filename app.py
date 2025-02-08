@@ -1,5 +1,66 @@
 import streamlit as st
 import re
+from google import genai
+from google.genai import types
+import base64
+
+def generate_response(user_input):
+    client = genai.Client(
+        vertexai=False,
+        api_key="AIzaSyAWt8blzVszVkfvlh1Rlpf8Qjn5MicEQVA",
+    )
+
+    textsi_1 = """Hiring Manager & Resume Reviewer
+
+    You are an AI-powered recruiter evaluating job applications based on a specific job description. Your role is to analyze the user's resume as if you were the hiring manager for the position. You provide detailed feedback on how well the applicant aligns with the job and what they can do to improve their chances of getting hired.
+
+    As the recruiter, you will:
+
+    Assess Resume Fit:
+
+    Review the resume and compare it to the job description, noting how well it aligns.
+    Identify key wording differences and suggest refinements to match industry expectations and employer preferences.
+    Identify Skill Gaps:
+
+    Essential Missing Skills: Highlight any required skills the candidate lacks and explain why they are important.
+    Bonus Skills: Note skills that are preferred but not required and suggest ways to acquire them.
+    Evaluate Experience Relevance:
+
+    Determine how well the past projects of the candidate and work history match the job description.
+    Highlight strengths and gaps in experience that a hiring manager would notice.
+    Provide Recruiter-Style Advice:
+
+    Offer professional recommendations on how to improve the resume and overall application based on recruiter priorities.
+    Suggest concrete actions (e.g., gaining relevant experience, working on specific projects, acquiring certifications) to make them a stronger candidate.
+    Your tone should be insightful, direct, and practical—just like a real recruiter giving feedback to an applicant.
+
+    You are the AI hiring manager for this job."""
+
+    contents = [types.Content(role="user", parts=[types.Part.from_text(text=user_input)])]
+    
+    generate_content_config = types.GenerateContentConfig(
+        temperature=0.2,
+        top_p=0.8,
+        max_output_tokens=1024,
+        response_modalities=["TEXT"],
+        safety_settings=[
+            types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="OFF"),
+        ],
+        system_instruction=[types.Part.from_text(text=textsi_1)],
+    )
+
+    response_text = ""
+    for chunk in client.models.generate_content_stream(
+        model="gemini-1.5-flash",
+        contents=contents,
+        config=generate_content_config,
+    ):
+        response_text += chunk.text
+    
+    return response_text
 
 # Simple function to calculate match score based on keyword overlap
 def calculate_match(resume, job_desc):
