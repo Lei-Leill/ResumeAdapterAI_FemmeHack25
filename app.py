@@ -98,7 +98,7 @@ st.markdown(
 
 # File uploader for the resume
 resume_file = st.file_uploader("Upload your Resume", type=['txt', 'pdf'])
-job_desc = st.text_area("Job Description", height=200)
+job_desc = st.text_area("Upload a Job Description", height=200)
 
 # Display the match score when the user clicks the button
 if resume_file is not None and job_desc:
@@ -110,7 +110,7 @@ if resume_file is not None and job_desc:
     else:
         st.error("Please upload a valid .pdf or .txt file.")
     
-if st.button("Generate output from our AI Expert"):
+if st.button("Get feedback!"):
     generate_response(resume_text, job_desc)
     feedback = generate_response(resume_text, job_desc)  # Generate the feedback
     st.text_area("Feedback", feedback, height=300)  # Display the feedback
