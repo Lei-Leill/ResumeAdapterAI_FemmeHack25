@@ -113,4 +113,4 @@ if resume_file is not None and job_desc:
 if st.button("Get feedback!"):
     generate_response(resume_text, job_desc)
     feedback = generate_response(resume_text, job_desc)  # Generate the feedback
-    st.text_area("Feedback", feedback, height=300)  # Display the feedback
+    st.text_area("Feedback", feedback, height=1000)  # Display the feedback
