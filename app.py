@@ -72,7 +72,29 @@ def generate_response(resume_text, job_desc):
 
 
 # Streamlit UI
-st.title('Resume and Job Description Match')
+st.title('ScanDidate')
+st.title('Scan Your Resume with an AI Hiring Manager :)')
+
+
+image_path = "purple_pic.png"
+with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+image_base64 =  f"data:image/webp;base64,{encoded_string}"
+
+# Inject custom CSS to set a background image
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url({image_base64});
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """, unsafe_allow_html=True
+)
 
 # File uploader for the resume
 resume_file = st.file_uploader("Upload your Resume", type=['txt', 'pdf'])
